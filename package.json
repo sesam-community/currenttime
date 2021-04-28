@@ -1,0 +1,14 @@
+{
+    "name": "currenttime",
+    "private": true,
+    "version": "0.0.1",
+    "description": "A repo for connecting to the unit4 API",
+    "author": "jonas.christensen@sesam.io",
+    "license": "MIT",
+    "scripts": {
+        "stop": "lsof -t -i tcp:5000 | xargs kill -9",
+        "deploy": "",
+        "install": "sudo pip3 install -r ./service/requirements.txt",
+        "swagger": "python3 ./service/service.py"
+      }
+  }
