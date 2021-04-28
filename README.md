@@ -40,7 +40,7 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
         yarn swagger
     ```
 
-## Example payload for the /post/<path> or /post/<path>/<resource_path> route:
+## Example payload for the "/post/<path>" or "/post/<path>/<resource_path>" route:
 
 ```
 
