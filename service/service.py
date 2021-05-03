@@ -39,7 +39,7 @@ def stream_json(clean):
             first = False
         yield json.dumps(row)
     yield ']'
-
+    
 
 @app.route('/')
 def index():
@@ -66,23 +66,10 @@ def get_data(path):
 
     def emit_rows(exceed_limit, completed, result_offset, config):
         while exceed_limit is not None:
-            try:             
+            try:
+                logger.info("Requesting data...")             
                 request_url = f"{config.current_url}/{path}?%24count=true&%24skip={result_offset}"
                 data = requests.get(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"))
-                decoded_data = json.loads(data.content.decode('utf-8-sig'))
-                if not decoded_data['value']:
-                    logger.info("Result is None")
-                    logger.info(f"Paging is complete")
-                    completed = True
-                    exceed_limit = None
-                
-                if decoded_data['value']:
-                    updated_value = result_offset+1
-                    for entity in decoded_data['value']:
-                        entity['_updated'] = updated_value
-                        updated_value = updated_value+1
-
-                    yield json.dumps(decoded_data['value'])
                 
                 if not data.ok:
                     logger.error(f"Unexpected response status code: {data.content}")
@@ -90,18 +77,21 @@ def get_data(path):
                     raise
 
                 else:
-                    if completed == True:
-                        pass
+                    data_count = json.loads(data.content.decode('utf-8-sig'))["@odata.count"]
+                    updated_value = result_offset+1
+                    for entity in json.loads(data.content.decode('utf-8-sig'))["value"]:
+                        entity['_updated'] = updated_value
+                        yield json.dumps(entity)
+                        updated_value += 1
                     
-                    else:
-                        old_limit = exceed_limit            
-                        if exceed_limit != decoded_data["@odata.count"] or old_limit == True:
-                            exceed_limit = decoded_data["@odata.count"]
+                    if exceed_limit != None:          
+                        if exceed_limit != data_count:
+                            exceed_limit = data_count
                             result_offset+=exceed_limit
                             logger.info(f"Result offset is now {result_offset}")
                             logger.info(f"extending result")
-                        
-                        if old_limit != True and exceed_limit == old_limit:
+                    
+                        if exceed_limit == data_count:
                             logger.info(f"Paging is complete.")
                             exceed_limit = None
             
