@@ -39,7 +39,7 @@ def stream_json(clean):
             first = False
         yield json.dumps(row)
     yield ']'
-    
+
 
 @app.route('/')
 def index():
@@ -58,13 +58,12 @@ def get_data(path):
 
     exceed_limit = True
     result_offset = 0
-    completed = None
 
     if request.args.get('since') != None:
         logger.info('Requesting resource with since value.')
         result_offset = int(request.args.get('since'))
 
-    def emit_rows(exceed_limit, completed, result_offset, config):
+    def emit_rows(exceed_limit, result_offset, config):
         while exceed_limit is not None:
             try:
                 logger.info("Requesting data...")             
@@ -101,7 +100,7 @@ def get_data(path):
         logger.info("Returning objects...")
     
     try:
-        return Response(emit_rows(exceed_limit, completed, result_offset, config), status=200, mimetype='application/json')
+        return Response(emit_rows(exceed_limit, result_offset, config), status=200, mimetype='application/json')
     except Exception as e:
         logger.error("Error from Currenttime: %s", e)
         return Response(status=500)
