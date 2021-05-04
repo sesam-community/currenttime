@@ -157,3 +157,34 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
   "namespaced_identifiers": true
 }
 ```
+
+1. Name the pipe ```employees-employeedetail-outbound```
+
+2. Config :
+
+```
+{
+  "_id": "employees-employeedetail-outbound",
+  "type": "pipe",
+  "source": {
+    "type": "dataset",
+    "dataset": "employees-employeedetail"
+  },
+  "sink": {
+    "type": "json",
+    "system": "currenttime",
+    "url": "/post/<path>" or "/post/<path>/<resource_path>"
+  },
+  "transform": {
+    "type": "dtl",
+    "rules": {
+      "default": [
+        ["copy", "*"],
+        ["filter",
+          ["eq", "_S._deleted", false]
+        ]
+      ]
+    }
+  }
+}
+```
