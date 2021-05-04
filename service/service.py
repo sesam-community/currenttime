@@ -105,9 +105,9 @@ def get_data(path):
         logger.error("Error from Currenttime: %s", e)
         return Response(status=500)
 
-@app.route('/post/<path>/', defaults={'resource_path': None}, methods=['GET','POST'])
-@app.route('/post/<path>/<resource_path>', methods=['GET','POST'])
-def post_data(path, resource_path):
+@app.route('/chained/<path>/', defaults={'resource_path': None}, methods=['GET','POST'])
+@app.route('/chained/<path>/<resource_path>', methods=['GET','POST'])
+def chain_data(path, resource_path):
     config = VariablesConfig(required_env_vars)
     if not config.validate():
         sys.exit(1)
@@ -140,6 +140,60 @@ def post_data(path, resource_path):
     except Exception as e:
         logger.error("Error from Currenttime: %s", e)
         return Response(status=500)
+
+
+@app.route('/post/<path>/', defaults={'resource_path': None}, methods=['GET','POST'])
+@app.route('/post/<path>/<resource_path>', methods=['GET','POST'])
+def post_data(path, resource_path):
+    config = VariablesConfig(required_env_vars)
+    if not config.validate():
+        sys.exit(1)
+
+    request_data = request.get_data()
+    json_data = json.loads(str(request_data.decode("utf-8")))
+
+    for element in json_data:
+        try:
+            resource_id = element["id"]
+        except:
+            resource_id = None
+        
+        if resource_path == None and resource_id == None:
+            request_url = f"{config.current_url}/{path}"
+            data = requests.post(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"), data=json.dumps(element))
+            if not data.ok:
+                logger.error(f"Unexpected response status code: {data.content}")
+                return f"Unexpected error : {data.content}", 500
+                raise
+
+        if resource_path == None and resource_id != None:
+            if element['deleted'] == True:
+                request_url = f"{config.current_url}/{path}({resource_id})"
+                data = requests.delete(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"))
+                if not data.ok:
+                    logger.error(f"Unexpected response status code: {data.content}")
+                    return f"Unexpected error : {data.content}", 500
+                    raise
+            else:
+                request_url = f"{config.current_url}/{path}({resource_id})"
+                data = requests.put(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"), data=json.dumps(element))
+                if not data.ok:
+                    logger.error(f"Unexpected response status code: {data.content}")
+                    return f"Unexpected error : {data.content}", 500
+                    raise
+        
+        if resource_path != None and resource_id != None:
+            request_url = f"{config.current_url}/{path}({resource_id})/{resource_path}"
+            data = requests.put(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"), data=json.dumps(element))
+            if not data.ok:
+                logger.error(f"Unexpected response status code: {data.content}")
+                return f"Unexpected error : {data.content}", 500
+                raise
+
+        else:
+            logger.info("Nothing to do... Look at the README or in the code to modify the if clauses.")
+
+    return jsonify({'Steve reporting': "work complete..."})
 
 
 if __name__ == '__main__':

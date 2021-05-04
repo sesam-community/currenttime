@@ -10,11 +10,21 @@ https://app-u4-olavstoppen-api.azurewebsites.net/swagger/ui/index.html#/
 
 ```/get/<path>```
 
+```/chained/<path>```
+
+```/chained/<path>/<resource_path>```
+
 ```/post/<path>```
 
 ```/post/<path>/<resource_path>```
 
 The microservice supports the use of since in Sesam. This is implemented in the ```/get/<path>``` route.
+
+On the route ```/post/``` entities can be deleted and/or updated. Therefore use these routes with caution. Details on expected payloads for this functionality can be found in the above link to the documentation.
+
+- To flag an entity for deletion in the CurrentTime API make sure you define a property with a key ```deleted``` and set its value to True.
+
+- Additionally, make sure you provide the property with a key ```id``` and a respective value when needed on the ```/post/```routes.
 
 ## How to:
 
@@ -141,7 +151,7 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
       "type": "http",
       "system": "currenttime",
       "batch_size": <an integer>,
-      "url": "/post/<path>" or "post/<path>/<resource_path>"
+      "url": "/chained/<path>" or "chained/<path>/<resource_path>"
     }]
   },
   "namespaced_identifiers": true
