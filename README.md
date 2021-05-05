@@ -151,7 +151,7 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
       "type": "http",
       "system": "currenttime",
       "batch_size": <an integer>,
-      "url": "/chained/<path>" or "chained/<path>/<resource_path>"
+      "url": "/chained/<path>" or "/chained/<path>/<resource_path>"
     }]
   },
   "namespaced_identifiers": true
