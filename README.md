@@ -79,9 +79,11 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
     "image": "<docker username>/currenttime:<semantic_versioning>",
     "memory": 512,
     "port": 5000,
-    "current_user": "$ENV(<username for Unit4 account>)",
-    "current_password": "$ENV(<password for Unit4 account>)",
-    "current_url": "$ENV(<your base_url>)"
+    "environment": {
+      "current_user": "$ENV(<username for Unit4 account>)",
+      "current_password": "$SECRET(<password for Unit4 account>)",
+      "current_url": "$ENV(<your base_url>)"
+    }
   },
   "verify_ssl": true
 }
