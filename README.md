@@ -116,7 +116,7 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
   },
   "pump": {
     "cron_expression": "0/10 * * * *",
-    "rescan_cron_expression": "0 * * * *"
+    "rescan_cron_expression": "0 03 * * ?"
   }
 }
 ```
