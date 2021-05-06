@@ -78,10 +78,17 @@ def get_data(path):
                 else:
                     data_count = json.loads(data.content.decode('utf-8-sig'))["@odata.count"]
                     updated_value = result_offset+1
+                    first = True
+                    yield '['
                     for entity in json.loads(data.content.decode('utf-8-sig'))["value"]:
                         entity['_updated'] = updated_value
+                        if not first:
+                            yield ','
+                        else:
+                            first = False
                         yield json.dumps(entity)
                         updated_value += 1
+                    yield ']'
                     
                     if exceed_limit != None:          
                         if exceed_limit != data_count:
@@ -116,6 +123,7 @@ def chain_data(path, resource_path):
     json_data = json.loads(str(request_data.decode("utf-8")))
 
     def emit_rows(config, json_data):
+        first = True
         for element in json_data[0].get("payload"):
             resource = [*element.values()][0]
             if resource_path == None:
@@ -131,8 +139,12 @@ def chain_data(path, resource_path):
                 raise
 
             else:
-                yield json.dumps(data.json())
-        
+                if not first:
+                    yield ','
+                else:
+                    first = False
+                yield json.dumps(data.json()["value"])
+               
         logger.info("Returning objects...")
 
     try:

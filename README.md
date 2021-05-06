@@ -143,7 +143,7 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
             ["eq", "_S._deleted", false]
           ],
           ["add", "::payload",
-            ["map",
+            ["list",
               ["dict", "employeeId", "_S.EmployeeId"]
             ]
           ]
@@ -152,12 +152,22 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
     }, {
       "type": "http",
       "system": "currenttime",
-      "batch_size": <an integer>,
-      "url": "/chained/<path>" or "/chained/<path>/<resource_path>"
+      "batch_size": 1,
+      "url": "/chained/employees/EmployeeDetail"
+    }, {
+      "type": "dtl",
+      "rules": {
+        "default": [
+          ["copy", "*"],
+          ["add", "_id",
+            ["string", "_S.EmployeeDetailId"]
+          ]
+        ]
+      }
     }]
-  },
-  "namespaced_identifiers": true
+  }
 }
+
 ```
 
 1. Name the pipe ```employees-employeedetail-outbound```
