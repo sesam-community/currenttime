@@ -14,6 +14,8 @@ https://app-u4-olavstoppen-api.azurewebsites.net/swagger/ui/index.html#/
 
 ```/chained/<path>/<resource_path>```
 
+```/chained/<path>/<resource_path>/<sub_resource_path>'```
+
 ```/post/<path>```
 
 ```/post/<path>/<resource_path>```

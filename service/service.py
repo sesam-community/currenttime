@@ -113,8 +113,9 @@ def get_data(path):
         return Response(status=500)
 
 @app.route('/chained/<path>/', defaults={'resource_path': None}, methods=['GET','POST'])
-@app.route('/chained/<path>/<resource_path>', methods=['GET','POST'])
-def chain_data(path, resource_path):
+@app.route('/chained/<path>/<resource_path>', defaults={'sub_resource_path': None}, methods=['GET','POST'])
+@app.route('/chained/<path>/<resource_path>/<sub_resource_path>', methods=['GET','POST'])
+def chain_data(path, resource_path, sub_resource_path):
     config = VariablesConfig(required_env_vars)
     if not config.validate():
         sys.exit(1)
@@ -128,6 +129,10 @@ def chain_data(path, resource_path):
             resource = [*element.values()][0]
             if resource_path == None:
                 request_url = f"{config.current_url}/{path}({resource})"
+                data = requests.get(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"))
+            if sub_resource_path != None:
+                sub_resource = [*element.values()][1]
+                request_url = f"{config.current_url}/{path}({resource})/{resource_path}({sub_resource})/{sub_resource_path}"
                 data = requests.get(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"))
             else:
                 request_url = f"{config.current_url}/{path}({resource})/{resource_path}"
