@@ -172,6 +172,7 @@ def post_data(path, resource_path):
     for element in json_data:
         try:
             resource_id = element["id"]
+            del element["id"]
         except:
             resource_id = None
         
