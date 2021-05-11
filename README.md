@@ -28,6 +28,8 @@ On the route ```/post/``` entities can be deleted and/or updated. Therefore use 
 
 - Additionally, make sure you provide the property with a key ```id``` and a respective value when needed on the ```/post/```routes.
 
+- As of now, the ```/post/``` route does not support updating or deleting of a ```<sub_resource_path>```
+
 ## How to:
 
 *Run program in development*
