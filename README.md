@@ -114,7 +114,10 @@ This repo uses the file ```package.json``` and [yarn](https://yarnpkg.com/lang/e
     "type": "dtl",
     "rules": {
       "default": [
-        ["copy", "*"]
+        ["copy", "*"],
+        ["add", "_id",
+          ["string", "_S.EmployeeId"]
+        ]
       ]
     }
   },
