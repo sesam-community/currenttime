@@ -178,6 +178,7 @@ def post_data(path, resource_path):
         
         if resource_path == None and resource_id == None:
             request_url = f"{config.current_url}/{path}"
+            logger.info(f"Trying to POST payload: {element}")
             data = requests.post(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"), data=json.dumps(element))
             if not data.ok:
                 logger.error(f"Unexpected response status code: {data.content}")
@@ -188,6 +189,7 @@ def post_data(path, resource_path):
 
         if resource_path == None and resource_id != None:
             if element['deleted'] == True:
+                logger.info(f"Trying to DELETE payload: {element}")
                 request_url = f"{config.current_url}/{path}({resource_id})"
                 data = requests.delete(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"))
                 if not data.ok:
@@ -198,6 +200,7 @@ def post_data(path, resource_path):
                     logger.info(f"DELETE Completed")
             
             else:
+                logger.info(f"Trying to PUT payload: {element}")
                 request_url = f"{config.current_url}/{path}({resource_id})"
                 data = requests.put(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"), data=json.dumps(element))
                 if not data.ok:
@@ -208,6 +211,7 @@ def post_data(path, resource_path):
                     logger.info(f"UPDATE Completed")
         
         if resource_path != None and resource_id != None:
+            logger.info(f"Trying to PUT payload: {element}")
             request_url = f"{config.current_url}/{path}({resource_id})/{resource_path}"
             data = requests.put(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"), data=json.dumps(element))
             if not data.ok:
