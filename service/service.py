@@ -182,7 +182,9 @@ def post_data(path, resource_path):
             if not data.ok:
                 logger.error(f"Unexpected response status code: {data.content}")
                 return f"Unexpected error : {data.content}", 500
-                raise
+
+            if data.ok:
+                logger.info(f"POST Completed")
 
         if resource_path == None and resource_id != None:
             if element['deleted'] == True:
@@ -191,14 +193,19 @@ def post_data(path, resource_path):
                 if not data.ok:
                     logger.error(f"Unexpected response status code: {data.content}")
                     return f"Unexpected error : {data.content}", 500
-                    raise
+                
+                if data.ok:
+                    logger.info(f"DELETE Completed")
+            
             else:
                 request_url = f"{config.current_url}/{path}({resource_id})"
                 data = requests.put(request_url, headers=headers, auth=(f"{config.current_user}", f"{config.current_password}"), data=json.dumps(element))
                 if not data.ok:
                     logger.error(f"Unexpected response status code: {data.content}")
                     return f"Unexpected error : {data.content}", 500
-                    raise
+                
+                if data.ok:
+                    logger.info(f"UPDATE Completed")
         
         if resource_path != None and resource_id != None:
             request_url = f"{config.current_url}/{path}({resource_id})/{resource_path}"
@@ -206,10 +213,12 @@ def post_data(path, resource_path):
             if not data.ok:
                 logger.error(f"Unexpected response status code: {data.content}")
                 return f"Unexpected error : {data.content}", 500
-                raise
+            
+            if data.ok:
+                logger.info(f"UPDATE Completed")
 
-        else:
-            logger.info("Nothing to do... Look at the README or in the code to modify the if clauses.")
+        #else:
+        #    logger.info("Nothing to do... Look at the README or in the code to modify the if clauses.")
 
     return jsonify({'Steve reporting': "work complete..."})
 
